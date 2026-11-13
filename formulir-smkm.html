@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulir Penerimaan Peserta Didik Baru — SMKM-YMJ</title>
+<style>
+
+:root{
+  --teal:#0f3d56; --teal-2:#155a7d; --gold:#c9a14a; --gold-soft:#e3c97a;
+  --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --bg:#f4f6f8; --card:#ffffff;
+  --ok:#2f855a; --err:#c53030;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,"Noto Sans",Arial,sans-serif;line-height:1.5;font-size:15px}
+header.top{background:var(--teal);color:#fff;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.top-bar{height:6px;background:var(--gold)}
+.top-inner{max-width:820px;margin:0 auto;padding:16px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{width:44px;height:44px;border-radius:50%;background:var(--gold);color:var(--teal);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex:0 0 auto}
+.brand h1{font-size:19px;font-weight:700;letter-spacing:.2px}
+.brand p{font-size:12.5px;color:#cdd9e2;font-weight:400}
+.brand .div-tag{display:inline-block;margin-top:4px;font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);background:var(--gold);padding:2px 9px;border-radius:10px}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.top-actions a{color:#fff;font-size:12.5px;font-weight:600;background:rgba(255,255,255,.12);padding:7px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.2);text-decoration:none}
+.top-actions a:hover{background:rgba(255,255,255,.2)}
+
+.stepper-wrap{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+.stepper{max-width:820px;margin:0 auto;padding:12px 16px;display:flex;align-items:flex-start;gap:4px;overflow-x:auto}
+.step-dot{flex:0 0 auto;min-width:78px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;color:var(--muted);text-align:center}
+.step-dot .num{width:30px;height:30px;border-radius:50%;background:var(--line);color:var(--muted);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;border:2px solid transparent}
+.step-dot .lbl{font-size:11px;font-weight:600;line-height:1.2}
+.step-dot:hover{color:var(--teal)}
+.step-dot.done .num{background:var(--ok);color:#fff}
+.step-dot.active .num{background:var(--teal);color:#fff;border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,161,74,.18)}
+.step-dot.active{color:var(--teal)}
+.step-line{flex:0 0 18px;height:2px;background:var(--line);margin-top:14px;border-radius:1px}
+.step-line.done{background:var(--ok)}
+
+main{max-width:820px;margin:24px auto;padding:0 20px 90px}
+.step{display:none;animation:fade .25s ease}
+.step.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:28px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.intro{margin-bottom:18px}
+.intro h2{font-size:21px;color:var(--teal);font-weight:800;margin-bottom:4px}
+.intro p{font-size:13.5px;color:var(--muted)}
+
+.sec-title{font-size:13px;font-weight:800;color:#fff;background:var(--teal);padding:9px 14px;border-radius:6px;margin:22px 0 0;letter-spacing:.4px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:"";width:4px;height:16px;background:var(--gold);border-radius:2px}
+.sec-title.first{margin-top:0}
+.sec-body{border:1px solid var(--line);border-top:none;border-radius:0 0 6px 6px;padding:18px 16px;background:#fbfcfd}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 18px}
+.grid .full{grid-column:1 / -1}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:13px;font-weight:600}
+.field label .req{color:var(--err);margin-left:2px}
+.field .hint{font-size:11.5px;color:var(--muted);font-weight:400}
+
+input[type=text],input[type=email],input[type=tel],input[type=number],input[type=date],input[type=time],select,textarea{
+  font:inherit;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:7px;padding:9px 11px;width:100%;transition:border-color .15s,box-shadow .15s;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal-2);box-shadow:0 0 0 3px rgba(21,90,125,.12)}
+input.invalid,select.invalid,textarea.invalid{border-color:var(--err);box-shadow:0 0 0 3px rgba(197,48,48,.12)}
+textarea{resize:vertical;min-height:80px}
+.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.inline .field{flex:1;min-width:120px}
+
+.check-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 12px}
+@media(max-width:720px){.check-grid{grid-template-columns:repeat(2,1fr)}}
+.check{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-radius:7px;padding:8px 10px;cursor:pointer;font-size:13px}
+.check:hover{border-color:var(--gold)}
+.check input{margin:0;accent-color:var(--teal)}
+.check input:checked + span{font-weight:700;color:var(--teal)}
+.radio-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.radio-row label{display:flex;align-items:center;gap:7px;font-size:13.5px;cursor:pointer;padding:8px 14px;border:1px solid var(--line);border-radius:7px;background:#fff}
+.radio-row label:hover{border-color:var(--gold)}
+.radio-row input{accent-color:var(--teal)}
+
+.petugas{background:#fff7e6;border:1px dashed var(--gold);border-radius:7px;padding:11px 13px;font-size:12.5px;color:#7a5b12;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.petugas strong{color:#5c4410}
+
+.photo-box{display:flex;flex-direction:column;align-items:center;gap:8px}
+.photo-box .frame{width:90px;height:120px;border:1.5px dashed var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--muted);font-weight:600;background:#fffaf0}
+
+table.info{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+table.info th,table.info td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+table.info th{background:var(--teal);color:#fff;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.3px}
+table.info td.num{text-align:center;font-weight:700;color:var(--teal);width:34px}
+.note-list{font-size:12.5px;color:var(--ink);padding-left:20px}
+.note-list li{margin-bottom:5px;line-height:1.45}
+.agree-box{background:#eef5fa;border:1px solid #cfe0ea;border-radius:7px;padding:11px 13px;margin-top:14px;font-size:13px}
+.agree-box label{display:flex;gap:9px;align-items:flex-start;cursor:pointer}
+.agree-box input{margin-top:3px;accent-color:var(--teal)}
+
+.sign-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px;text-align:center}
+@media(max-width:640px){.sign-row{grid-template-columns:1fr}}
+.sign-cell .place{font-size:13px;color:var(--muted);margin-bottom:58px}
+.sign-cell .line{border-top:1.5px solid var(--ink);padding-top:6px;font-size:13px;font-weight:600}
+.sign-cell .role{font-size:12px;color:var(--muted);font-weight:400}
+
+.nav-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;flex-wrap:wrap;position:sticky;bottom:0;background:linear-gradient(to top,var(--bg) 60%,transparent);padding:12px 0}
+.btn{font:inherit;font-weight:700;border:none;border-radius:8px;padding:11px 22px;cursor:pointer;transition:transform .1s,box-shadow .15s,background .15s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-primary:hover{background:var(--teal-2);box-shadow:0 4px 12px rgba(15,61,86,.3)}
+.btn-gold{background:var(--gold);color:var(--teal)}
+.btn-gold:hover{background:var(--gold-soft)}
+.btn-ghost{background:#fff;color:var(--teal);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--teal)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.progress-txt{flex:1;text-align:center;font-size:12.5px;color:var(--muted);min-width:120px}
+
+.err-banner{background:#fef2f2;border:1px solid #fecaca;color:var(--err);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none}
+.err-banner.show{display:block}
+
+#summary-content .sum-form h3{font-size:13.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:18px 0 6px}
+#summary-content .sum-form:first-child h3{margin-top:0}
+.sum-table{width:100%;border-collapse:collapse;font-size:12.5px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.sum-table td{padding:7px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+.sum-table tr:last-child td{border-bottom:none}
+.sum-table td.k{width:40%;color:var(--muted);font-weight:600;background:#fafbfc}
+.sum-table td.v{color:var(--ink)}
+.sum-table td.v.empty{color:#bbb;font-style:italic}
+.empty-state{text-align:center;padding:30px 20px;color:var(--muted)}
+.alert{background:#fff7e6;border:1px solid var(--gold);border-radius:8px;padding:12px 16px;font-size:13px;color:#7a5b12;margin-bottom:16px}
+.alert.success{background:#eafaf1;border-color:#9ae6b4;color:#22543d}
+.alert a{color:var(--teal-2);font-weight:600}
+
+footer.foot{max-width:820px;margin:0 auto;padding:8px 20px 40px;color:var(--muted);font-size:11.5px;text-align:center}
+footer.foot a{color:var(--teal-2);font-weight:600}
+
+/* gate */
+.gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.gate-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px 26px;max-width:380px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.gate-card h2{font-size:18px;color:var(--teal);margin-bottom:4px}
+.gate-card p{font-size:13px;color:var(--muted);margin-bottom:16px}
+.gate-card input{font:inherit;width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.gate-card input:focus{outline:none;border-color:var(--teal-2);box-shadow:0 0 0 3px rgba(21,90,125,.12)}
+.gate-card .gerr{color:var(--err);font-size:12.5px;margin-bottom:8px;display:none}
+.gate-card .gerr.show{display:block}
+.gate-card .hint{font-size:11.5px;color:var(--muted);margin-top:10px}
+.gate-card .btn{width:100%}
+
+@media print{
+  body{background:#fff;font-size:11px;color:#000}
+  .stepper-wrap,.nav-bar,.err-banner,.no-print,.gate{display:none !important}
+  main{max-width:none;margin:0;padding:0 8px 20px}
+  .step{display:block !important;page-break-after:always}
+  .step:last-child{page-break-after:auto}
+  .card{border:1px solid #ccc;box-shadow:none;padding:14px 16px;margin-bottom:14px}
+  .sec-title{page-break-after:avoid;background:var(--teal) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  input,select,textarea{border:1px solid #999;background:#fff !important;color:#000 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .check,.radio-row label{border:1px solid #999}
+  .petugas,.alert{background:#fff !important;border:1px dashed #999}
+}
+
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-bar"></div>
+  <div class="top-inner">
+    <div class="logo">🎼</div>
+    <div class="brand">
+      <h1>SMKM-YMJ</h1>
+      <p>Penerimaan Peserta Didik Baru · Tahun Ajaran 2025/2026</p>
+      <span class="div-tag">Divisi SMKM</span>
+    </div>
+  </div>
+</header>
+
+<div class="stepper-wrap no-print">
+  <div class="stepper" id="stepper"></div>
+</div>
+
+<main>
+<form id="form-smkm" novalidate>
+  <div class="err-banner" id="err-banner">Mohon lengkapi isian yang ditandai <strong>*</strong> sebelum melanjutkan.</div>
+  <section class="step active" id="step-0">
+    <div class="card">
+      <div class="intro"><h2>Langkah 1 &middot; Instrument Mayor</h2><p>Data pendaftaran dan pilihan instrument mayor.</p></div>
+
+      <div class="petugas"><strong>No. Audisi (MFA):</strong><input type="text" data-label="No. Audisi" placeholder="diisi petugas" style="flex:0 0 auto;width:160px"><strong>Tanggal Pendaftaran:</strong><input type="date" data-label="Tanggal Pendaftaran" style="flex:0 0 auto;width:170px"></div>
+      <div class="grid" style="margin-top:16px">
+        <div class="field"><label>Instrument Mayor 1</label><input type="text" data-label="Instrument Mayor 1" placeholder="Pilihan utama"></div>
+        <div class="field"><label>Instrument Mayor 2</label><input type="text" data-label="Instrument Mayor 2" placeholder="Pilihan kedua (opsional)"></div>
+      </div>
+
+    </div>
+  </section>
+  <section class="step" id="step-1">
+    <div class="card">
+      <div class="intro"><h2>Langkah 2 &middot; Data Peserta Didik</h2><p>Identitas calon peserta didik.</p></div>
+
+      <div class="grid">
+        <div class="field"><label>Nama Lengkap <span class="req">*</span></label><input type="text" data-label="Nama Lengkap" required></div>
+        <div class="field" style="align-items:center;justify-content:center"><div class="photo-box"><div class="frame">Pas foto<br>berwarna<br>4&times;6</div><input type="file" accept="image/*" data-label="Pas Foto 4x6"></div></div>
+        <div class="field"><label>Tempat, Tanggal Lahir</label><input type="text" data-label="Tempat, Tanggal Lahir" placeholder="Kota, dd/mm/yyyy"></div>
+        <div class="field"><label>Jenis Kelamin (L/P)</label><div class="radio-row"><label><input type="radio" name="jk" data-group="Jenis Kelamin" data-opt="L">L</label><label><input type="radio" name="jk" data-group="Jenis Kelamin" data-opt="P">P</label></div></div>
+        <div class="field full"><label>Alamat</label><textarea data-label="Alamat" rows="2"></textarea></div>
+        <div class="field"><label>RT</label><input type="text" data-label="RT"></div>
+        <div class="field"><label>RW</label><input type="text" data-label="RW"></div>
+        <div class="field"><label>Kecamatan</label><input type="text" data-label="Kecamatan"></div>
+        <div class="field"><label>Kelurahan</label><input type="text" data-label="Kelurahan"></div>
+        <div class="field"><label>Kode Pos</label><input type="text" data-label="Kode Pos"></div>
+        <div class="field"><label>Agama</label><select data-label="Agama"><option value="">&mdash; pilih &mdash;</option><option>Islam</option><option>Kristen Protestan</option><option>Kristen Katolik</option><option>Hindu</option><option>Buddha</option><option>Konghucu</option><option>Lainnya</option></select></div>
+        <div class="field"><label>Anak ke / bersaudara</label><div class="inline"><input type="number" data-label="Anak ke" placeholder="anak ke" min="1" style="flex:1"><span style="color:var(--muted)">/</span><input type="number" data-label="Bersaudara" placeholder="bersaudara" min="1" style="flex:1"></div></div>
+        <div class="field"><label>No. Tlp Bapak</label><input type="tel" data-label="No Tlp Bapak"></div>
+        <div class="field"><label>No. Tlp Ibu</label><input type="tel" data-label="No Tlp Ibu"></div>
+        <div class="field full"><label>Sekolah Asal</label><input type="text" data-label="Sekolah Asal"></div>
+        <div class="field full"><label>Status Peserta Didik</label><div class="radio-row"><label><input type="radio" name="status" data-group="Status Peserta Didik" data-opt="Peserta Didik Baru">Peserta Didik Baru</label><label><input type="radio" name="status" data-group="Status Peserta Didik" data-opt="Peserta Didik Pindahan">Peserta Didik Pindahan</label><input type="text" data-label="Pindahan Kelas" placeholder="Kelas (jika pindahan)" style="max-width:160px"></div></div>
+      </div>
+
+    </div>
+  </section>
+  <section class="step" id="step-2">
+    <div class="card">
+      <div class="intro"><h2>Langkah 3 &middot; Dokumen & Asrama</h2><p>Kelengkapan dokumen dan kebutuhan asrama.</p></div>
+
+      <label style="font-weight:700;font-size:13px">Dokumen pendukung <span class="hint" style="font-weight:400">(* fotokopi wajib dilampirkan)</span></label>
+      <div class="check-grid" style="grid-template-columns:repeat(2,1fr);margin-top:8px">
+        <label class="check"><input type="checkbox" name="dok" data-group="Dokumen Pendukung" data-opt="Raport/Ijazah/NISN*"><span>Raport / Ijazah / NISN*</span></label>
+        <label class="check"><input type="checkbox" name="dok" data-group="Dokumen Pendukung" data-opt="Akta Lahir*"><span>Akta Lahir*</span></label>
+        <label class="check"><input type="checkbox" name="dok" data-group="Dokumen Pendukung" data-opt="KTP/Paspor/KK*"><span>KTP / Paspor / KK*</span></label>
+        <div class="field" style="background:#fff;border:1px solid var(--line);border-radius:7px;padding:8px 10px"><input type="text" data-label="Dokumen Lainnya" placeholder="Lainnya: &hellip;"></div>
+      </div>
+      <div class="field" style="margin-top:14px"><label>Apakah Anda ingin tinggal di asrama?</label><div class="radio-row"><label><input type="radio" name="asrama" data-group="Tinggal di Asrama" data-opt="Ya">YA</label><label><input type="radio" name="asrama" data-group="Tinggal di Asrama" data-opt="Tidak">TIDAK</label></div></div>
+      <div class="field full" style="margin-top:14px"><label>Keterangan</label><textarea data-label="Keterangan Asrama" rows="2"></textarea></div>
+
+    </div>
+  </section>
+  <section class="step" id="step-3">
+    <div class="card">
+      <div class="intro"><h2>Langkah 4 &middot; Pendapatan Ortu</h2><p>Data pendapatan orang tua/wali.</p></div>
+
+      <div class="grid">
+        <div class="field"><label>Pendapatan Ayah</label><input type="text" data-label="Pendapatan Ayah" placeholder="Rp &hellip; /bulan"></div>
+        <div class="field"><label>Pendapatan Ibu</label><input type="text" data-label="Pendapatan Ibu" placeholder="Rp &hellip; /bulan"></div>
+      </div>
+
+    </div>
+  </section>
+  <section class="step" id="step-4">
+    <div class="card">
+      <div class="intro"><h2>Langkah 5 &middot; Perjanjian Pembayaran</h2><p>Informasi biaya, syarat & perjanjian pembayaran.</p></div>
+
+      <label style="font-weight:700;font-size:13px">Informasi Biaya</label>
+      <table class="info"><thead><tr><th>No</th><th>Keterangan</th><th>Jumlah</th></tr></thead><tbody>
+        <tr><td class="num">1</td><td>SPP</td><td>Rp 2.700.000,-</td></tr>
+        <tr><td class="num">2</td><td>Seragam &amp; Buku Paket</td><td>Rp 4.500.000,-</td></tr>
+        <tr><td class="num">3</td><td>Uang Kegiatan</td><td>Rp 6.500.000,-</td></tr>
+        <tr><td class="num">4</td><td>Formulir Pendaftaran</td><td>Rp 300.000,-</td></tr>
+        <tr><td class="num">5</td><td>Uang Pangkal</td><td>Rp 24.500.000 &ndash; Rp 29.500.000,-</td></tr>
+      </tbody></table>
+      <label style="font-weight:700;font-size:13px;display:block;margin-top:14px">Syarat dan Ketentuan</label>
+      <ol class="note-list" style="margin-top:6px">
+        <li>Orang Tua/Wali peserta didik wajib melunasi pembayaran uang pangkal sesuai batas waktu yang telah ditentukan dalam formulir pendaftaran. Jika pembayaran belum dilunasi sampai batas waktu, maka calon peserta didik dianggap mengundurkan diri.</li>
+        <li>Segala jenis pembayaran yang telah dilakukan bersifat non-refundable, dan tidak dapat dialihkan untuk keperluan lainnya.</li>
+        <li>Sekolah menyediakan kebutuhan buku dan alat-alat musik untuk peserta didik di toko Opus &amp; Organum.</li>
+        <li>Pembayaran dapat melalui transfer dan dinyatakan sah bila bukti transfer diserahkan kepada kasir atau dikirim ke finance@smkm-ymj.sch.id</li>
+      </ol>
+      <div class="agree-box"><label><input type="checkbox" data-label="Persetujuan Perjanjian Pembayaran"> <span>Dengan ini saya menyatakan bersedia melaksanakan seluruh prosedur administrasi SMKM-YMJ yang tertera pada formulir ini.</span></label></div>
+      <div class="field" style="margin-top:14px"><label>Nama Orang Tua / Wali Peserta Didik</label><input type="text" data-label="Nama Orang Tua/Wali (Perjanjian)"></div>
+
+    </div>
+  </section>
+  <section class="step" id="step-5">
+    <div class="card">
+      <div class="intro"><h2>Langkah 6 &middot; Persyaratan</h2><p>Daftar persyaratan calon peserta didik.</p></div>
+
+      <p style="font-size:13px;font-weight:700;margin-bottom:6px">Calon Peserta Didik diwajibkan:</p>
+      <ol class="note-list">
+        <li>Mengisi lengkap Formulir Penerimaan Peserta Didik Baru.</li>
+        <li>Menyerahkan 1 (satu) lembar fotokopi seluruh Buku Laporan Pendidikan (BLP) SMP / setara.</li>
+        <li>Menyerahkan 1 (satu) lembar fotokopi ijazah dan SKHUN (jika sudah lulus dari SMP/setara, paling lambat 5 September 2025).</li>
+        <li>Menyerahkan 2 (dua) lembar pas foto terbaru berwarna ukuran 3&times;4 cm.</li>
+        <li>Menyerahkan 1 (satu) lembar Surat Pernyataan Orang Tua/Wali murid bebas Narkoba.</li>
+        <li>Menyepakati dengan menandatangani Tata Tertib Sekolah SMKM-YMJ.</li>
+        <li>Biaya Formulir Siswa Baru Rp 300.000,- (Tiga Ratus Ribu Rupiah), sudah termasuk biaya tes dan wawancara.</li>
+      </ol>
+
+    </div>
+  </section>
+  <section class="step" id="step-6">
+    <div class="card">
+      <div class="intro"><h2>Langkah 7 &middot; Waktu & Biaya</h2><p>Jadwal pendaftaran, tes & biaya per gelombang.</p></div>
+
+      <table class="info"><thead><tr><th>Gelombang</th><th>Periode Pendaftaran</th><th>Pengumuman Hasil Test</th><th>Uang Pangkal</th><th>Keterangan</th></tr></thead><tbody>
+        <tr><td class="num">I</td><td>September 2024 s/d November 2024</td><td>Pengumuman 2 hari setelah dilakukan tes jurusan</td><td>Rp 24.500.000,-</td><td>Pelunasan pembayaran paling lambat 10 Desember 2024</td></tr>
+        <tr><td class="num">II</td><td>Desember 2024 s/d Maret 2025</td><td>2 hari setelah tes jurusan</td><td>Rp 27.500.000,-</td><td>Pelunasan pembayaran paling lambat 10 April 2025</td></tr>
+        <tr><td class="num">III</td><td>April 2025 s/d Juni 2025</td><td>2 hari setelah tes jurusan</td><td>Rp 29.500.000,-</td><td>Pelunasan pembayaran paling lambat 10 Juli 2025</td></tr>
+      </tbody></table>
+      <p class="hint" style="margin-top:8px">*Jadwal tes disesuaikan saat pendaftaran pembelian formulir.</p>
+
+    </div>
+  </section>
+  <section class="step" id="step-7">
+    <div class="card">
+      <div class="intro"><h2>Langkah 8 &middot; Informasi Biaya</h2><p>Rincian biaya & ketentuan pembayaran.</p></div>
+
+      <table class="info"><thead><tr><th>No</th><th>Keterangan</th><th>Jumlah</th><th>Detail</th><th>Deadline</th></tr></thead><tbody>
+        <tr><td class="num">1</td><td>SPP</td><td>Rp 2.700.000/bulan</td><td>Pembayaran SPP dilakukan per/3 bulan</td><td>10 Juni 2025</td></tr>
+        <tr><td class="num">2</td><td>Uang Seragam + Buku</td><td>Rp 4.500.000</td><td>Jadwal pengukuran diberitahukan selanjutnya</td><td>Pelunasan sesuai gelombang uang pangkal</td></tr>
+        <tr><td class="num">3</td><td>Uang Kegiatan</td><td>Rp 6.500.000</td><td>Concert dalam kota; Tour Concert; Ujian Sekolah 1 tahun; MAP Partitur</td><td>&mdash;</td></tr>
+        <tr><td class="num">4</td><td>Formulir Pendaftaran</td><td>Rp 300.000</td><td>Termasuk tes &amp; wawancara</td><td>&mdash;</td></tr>
+      </tbody></table>
+      <label style="font-weight:700;font-size:13px;display:block;margin-top:14px">Keterangan</label>
+      <ol class="note-list" style="margin-top:6px">
+        <li>Orang tua/Wali peserta didik wajib melunasi pembayaran Uang Pangkal sesuai batas waktu terakhir yang ditentukan. Jika melewati batas waktu, calon peserta didik dianggap mengundurkan diri.</li>
+        <li>Segala jenis pembayaran yang telah dilakukan bersifat non-refundable dan tidak dapat dialihkan atau digunakan untuk keperluan lainnya.</li>
+        <li>Sekolah menyediakan kebutuhan buku dan alat-alat musik untuk peserta didik di toko Opus &amp; Organum.</li>
+        <li>Pembayaran dapat melalui rekening Bank BCA a/n YAYASAN MUSIK JAKARTA <strong>588 018 2244</strong>.</li>
+        <li>Pembayaran melalui transfer dinyatakan sah setelah bukti transfer diserahkan kepada kasir atau bagian TU.</li>
+      </ol>
+
+    </div>
+  </section>
+  <section class="step" id="step-8">
+    <div class="card">
+      <div class="intro"><h2>Langkah 9 &middot; Ringkasan &amp; Selesai</h2><p>Tinjau data Anda dengan teliti, lalu kirim pendaftaran ke panitia atau cetak PDF sebagai salinan.</p></div>
+      <div class="alert">Klik <strong>Simpan Pendaftaran</strong> untuk mengirim data ke panitia. Catat nomor pendaftaran yang muncul.</div>
+      <div id="save-success" class="alert success" style="display:none"></div>
+      <div id="summary-content"><div class="empty-state">Isi formulir mulai dari Langkah 1, lalu kembali ke sini.</div></div>
+    </div>
+  </section>
+
+  <div class="nav-bar no-print">
+    <button type="button" class="btn btn-ghost" id="btn-prev" onclick="prevStep()">&larr; Sebelumnya</button>
+    <div class="progress-txt" id="progress-txt">Langkah 1 dari 9</div>
+    <button type="button" class="btn btn-primary" id="btn-next" onclick="nextStep()">Berikutnya &rarr;</button>
+    <button type="button" class="btn btn-primary" id="btn-save" onclick="saveRegistration()" style="display:none">💾 Simpan Pendaftaran</button>
+    <button type="button" class="btn btn-gold" id="btn-print" onclick="window.print()" style="display:none">🖨 Cetak / Simpan PDF</button>
+  </div>
+</form>
+</main>
+
+<footer class="foot">
+  SMKM-YMJ · Formulir PPDB · Akses staff/admin.
+</footer>
+
+<script>
+
+// ===== Config =====
+var DIVISI = "SMKM";
+var FORM_CODE = "SMKM";
+var DB_KEY = "smkm_registrations";
+var APPS_SCRIPT_URL = ""; // << isi URL web app Apps Script agar data otomatis masuk Google Sheet
+var N_CONTENT = 8; // jumlah langkah konten (tanpa ringkasan)
+
+// (Formulir PUBLIK — pendaftar bebas mengakses & mengisi. Tidak ada gate di sini.
+//  Yang dilindungi kata sandi adalah halaman rekap/database admin, bukan form ini.)
+
+// ===== Stepper =====
+var STEPS = [{"n": "Instrument Mayor"}, {"n": "Data Peserta Didik"}, {"n": "Dokumen & Asrama"}, {"n": "Pendapatan Ortu"}, {"n": "Perjanjian Pembayaran"}, {"n": "Persyaratan"}, {"n": "Waktu & Biaya"}, {"n": "Informasi Biaya"}, {"n": "Ringkasan"}];
+var current=0;
+(function buildStepper(){
+  var s=document.getElementById('stepper'); var html='';
+  STEPS.forEach(function(st,i){
+    html+='<div class="step-dot" onclick="goToStep('+i+')"><div class="num">'+(i+1)+'</div><div class="lbl">'+st.n+'</div></div>';
+    if(i<STEPS.length-1) html+='<div class="step-line"></div>';
+  });
+  s.innerHTML=html;
+})();
+function showStep(i){
+  document.querySelectorAll('.step').forEach(function(el,idx){el.classList.toggle('active',idx===i);});
+  var dots=document.querySelectorAll('.step-dot');
+  var lines=document.querySelectorAll('.step-line');
+  dots.forEach(function(d,idx){d.classList.toggle('active',idx===i);d.classList.toggle('done',idx<i);});
+  lines.forEach(function(l,idx){l.classList.toggle('done',idx<i);});
+  document.getElementById('progress-txt').textContent='Langkah '+(i+1)+' dari '+STEPS.length;
+  document.getElementById('btn-prev').disabled=(i===0);
+  var next=document.getElementById('btn-next'), print=document.getElementById('btn-print'), save=document.getElementById('btn-save');
+  if(i===STEPS.length-1){next.style.display='none';print.style.display='inline-block';if(save)save.style.display='inline-block';buildSummary();}
+  else{next.style.display='inline-block';print.style.display='none';if(save)save.style.display='none';}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goToStep(i){ if(i<0||i>=STEPS.length) return; current=i; showStep(i); }
+function validateStep(i){
+  var step=document.getElementById('step-'+i); if(!step) return true;
+  var reqs=step.querySelectorAll('[required]'); var ok=true, first=null;
+  reqs.forEach(function(el){ var v=(el.value||'').trim(); if(!v){el.classList.add('invalid');if(!first)first=el;ok=false;} else el.classList.remove('invalid'); });
+  if(!ok){ document.getElementById('err-banner').classList.add('show'); if(first)first.focus(); return false; }
+  document.getElementById('err-banner').classList.remove('show'); return true;
+}
+function nextStep(){ if(current>=STEPS.length-1) return; if(!validateStep(current)) return; current++; showStep(current); }
+function prevStep(){ if(current>0){current--;showStep(current);} }
+document.addEventListener('input',function(e){if(e.target.classList.contains('invalid'))e.target.classList.remove('invalid');});
+
+// ===== Database lokal =====
+function dbGet(){ try{return JSON.parse(localStorage.getItem(DB_KEY)||'[]');}catch(e){return [];} }
+function dbSet(arr){ localStorage.setItem(DB_KEY,JSON.stringify(arr)); }
+
+function cssEscape(s){return String(s).replace(/["\\\]]/g,'\\$&');}
+function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function singleValue(el){
+  var t=(el.type||'').toLowerCase();
+  if(el.tagName.toLowerCase()==='select'){return el.selectedIndex>0?el.options[el.selectedIndex].text:'';}
+  return (el.value||'').trim();
+}
+function collectData(){
+  var data={}, seenGroup={};
+  for(var s=0;s<N_CONTENT;s++){
+    var root=document.getElementById('step-'+s); if(!root) continue;
+    var els=Array.prototype.slice.call(root.querySelectorAll('[data-label],[data-group]'));
+    els.forEach(function(el){
+      var t=(el.type||'').toLowerCase();
+      if((t==='radio'||t==='checkbox')&&el.name){
+        if(seenGroup[el.name])return; seenGroup[el.name]=1;
+        var checked=Array.prototype.slice.call(root.querySelectorAll('input[name="'+cssEscape(el.name)+'"]:checked'));
+        data[el.dataset.group||el.name]=checked.map(function(c){return c.dataset.opt||c.value;}).join(', ');
+      } else if(t==='radio'||t==='checkbox'){
+        if(el.dataset.label && !(el.dataset.label in data)) data[el.dataset.label]=el.checked?'Ya':'';
+      } else {
+        if(el.dataset.label) data[el.dataset.label]=singleValue(el);
+      }
+    });
+  }
+  return data;
+}
+
+// ===== Kirim otomatis ke Google Sheet via Apps Script =====
+function postToSheet(rec){
+  if(!APPS_SCRIPT_URL) return; // belum dikonfigurasi -> hanya simpan lokal
+  try{
+    fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      mode:'no-cors', // request sederhana, tanpa preflight
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(rec)
+    }).then(function(){}, function(){});
+  }catch(e){}
+}
+
+function saveRegistration(){
+  var el=document.querySelector('[data-label="Nama Lengkap"]');
+  var nama=el?el.value.trim():'';
+  if(!nama){ alert('Nama Lengkap wajib diisi sebelum menyimpan.'); 
+    // lompat ke langkah yang berisi Nama Lengkap
+    for(var s=0;s<N_CONTENT;s++){ if(document.querySelector('#step-'+s+' [data-label="Nama Lengkap"]')){ goToStep(s); break; } }
+    return; }
+  var rec={
+    id: FORM_CODE+'-'+Date.now().toString(36).toUpperCase()+'-'+Math.floor(Math.random()*900+100),
+    createdAt: new Date().toISOString(),
+    form: FORM_CODE,
+    data: collectData()
+  };
+  var arr=dbGet(); arr.unshift(rec); dbSet(arr);
+  postToSheet(rec);
+  var box=document.getElementById('save-success');
+  if(box){ box.innerHTML='\u2713 Pendaftaran berhasil dikirim ke panitia. Nomor pendaftaran Anda: <strong>'+escapeHtml(rec.id)+'</strong>. Simpan/catat nomor ini.'; box.style.display='block'; }
+  var btn=document.getElementById('btn-save');
+  if(btn){ btn.textContent='\u2713 Tersimpan'; btn.disabled=true; }
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+
+// ===== Ringkasan =====
+function buildSummary(){
+  var html='', anyData=false;
+  for(var s=0;s<N_CONTENT;s++){
+    var root=document.getElementById('step-'+s); if(!root) continue;
+    var title=STEPS[s]?STEPS[s].n:('Langkah '+(s+1));
+    var els=Array.prototype.slice.call(root.querySelectorAll('[data-label],[data-group]'));
+    var rows='', seenGroup={}, seenSingle={};
+    els.forEach(function(el){
+      var t=(el.type||'').toLowerCase();
+      if((t==='radio'||t==='checkbox')&&el.name){
+        if(seenGroup[el.name])return; seenGroup[el.name]=1;
+        var checked=Array.prototype.slice.call(root.querySelectorAll('input[name="'+cssEscape(el.name)+'"]:checked'));
+        var label=el.dataset.group||el.name;
+        var val=checked.map(function(c){return c.dataset.opt||c.value;}).join(', ');
+        if(val)anyData=true;
+        rows+=sumRow(label,val);
+      } else if(t==='radio'||t==='checkbox'){
+        if(!el.dataset.label)return; if(seenSingle[el.dataset.label])return; seenSingle[el.dataset.label]=1;
+        var v=el.checked?'Ya':''; if(v)anyData=true; rows+=sumRow(el.dataset.label,v);
+      } else {
+        if(!el.dataset.label)return; if(seenSingle[el.dataset.label])return; seenSingle[el.dataset.label]=1;
+        var v=singleValue(el); if(v)anyData=true; rows+=sumRow(el.dataset.label,v);
+      }
+    });
+    html+='<div class="sum-form"><h3>'+escapeHtml(title)+'</h3>';
+    html+=rows?'<table class="sum-table"><tbody>'+rows+'</tbody></table>':'<div class="empty-state" style="padding:14px">(belum ada data)</div>';
+    html+='</div>';
+  }
+  if(!anyData) html='<div class="empty-state">Isi formulir mulai dari Langkah 1, lalu kembali ke sini.</div>';
+  document.getElementById('summary-content').innerHTML=html;
+}
+function sumRow(label,val){ var empty=(!val||val===''); return '<tr><td class="k">'+escapeHtml(label||'')+'</td><td class="v '+(empty?'empty':'')+'">'+(empty?'(belum diisi)':escapeHtml(val))+'</td></tr>'; }
+
+// ===== Persistence field-level =====
+function pkey(el){
+  var t=(el.type||'').toLowerCase();
+  if(el.name && (t==='radio'||t==='checkbox')) return DB_KEY+'_f_'+el.name+'__'+(el.value||el.dataset.opt||'');
+  if(el.dataset.label) return DB_KEY+'_f_'+el.dataset.label;
+  return DB_KEY+'_f_'+(el.id||'x');
+}
+function persist(el){ try{ var t=(el.type||'').toLowerCase(); if(t==='file')return; localStorage.setItem(pkey(el),(t==='checkbox'||t==='radio')?(el.checked?'1':'0'):el.value); }catch(e){} }
+function restoreAll(){
+  document.querySelectorAll('input,textarea,select').forEach(function(el){
+    try{ var t=(el.type||'').toLowerCase(); if(t==='file')return; var v=localStorage.getItem(pkey(el)); if(v===null)return; if(t==='checkbox'||t==='radio')el.checked=(v==='1'); else el.value=v; }catch(e){}
+  });
+}
+document.querySelectorAll('input,textarea,select').forEach(function(el){
+  el.addEventListener('change',function(){persist(el);});
+  el.addEventListener('input',function(){persist(el);});
+});
+
+function init(){ restoreAll(); showStep(0); }
+init();
+
+</script>
+</body>
+</html>
